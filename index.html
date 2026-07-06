@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ساعت T - ساعت عمر سلطنتی</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a1128">
+  <!-- اضافه کردن فونت فارسی زیبا -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  
+  <style>
+    :root {
+      --gold: linear-gradient(135deg, #ffe066 0%, #f5af19 50%, #e65c00 100%);
+      --gold-solid: #f5af19;
+      --bg-royal: radial-gradient(circle at center, #0b1b3d 0%, #030712 100%);
+      --card-bg: rgba(11, 27, 61, 0.65);
+      --border-gold: 2px solid #cca43b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Vazirmatn', sans-serif;
+    }
+
+    body {
+      background: var(--bg-royal);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* افکت کره ماه سلطنتی در پس‌زمینه */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fffde4 0%, #ebd39b 50%, #635334 100%);
+      box-shadow: 0 0 80px rgba(235, 211, 155, 0.4), inset -20px -20px 50px rgba(0,0,0,0.8);
+      opacity: 0.15;
+      z-index: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulseMoon 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseMoon {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.12; }
+      100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.18; }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      z-index: 1;
+    }
+
+    /* استایل قاب سلطنتی عتیقه */
+    .royal-card {
+      background: var(--card-bg);
+      border: var(--border-gold);
+      border-radius: 24px;
+      padding: 30px 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(245, 175, 25, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      text-align: center;
+      position: relative;
+    }
+
+    /* گوشه‌های تزئینی طلایی ساعت‌های قدیمی */
+    .royal-card::before, .royal-card::after {
+      content: '✦';
+      position: absolute;
+      color: var(--gold-solid);
+      font-size: 20px;
+      text-shadow: 0 0 8px rgba(245, 175, 25, 0.6);
+    }
+    .royal-card::before { top: 12px; right: 15px; }
+    .royal-card::after { bottom: 12px; left: 15px; }
+
+    h1 {
+      font-size: 28px;
+      background: var(--gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #b0c4de;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    /* فرم‌های انتخابی */
+    .form-group {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #ffd700;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .select-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .select-time-row {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1.2fr;
+      gap: 10px;
+    }
+
+    select {
+      background: rgba(10, 20, 45, 0.9);
+      border: 1px solid #cca43b;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    select:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    select option {
+      background: #0b132b;
+      color: #fff;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #030712;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(245, 175, 25, 0.4);
+      margin-top: 15px;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 175, 25, 0.6);
+    }
+
+    /* بخش نمایش ساعت T */
+    .dashboard {
+      display: none;
+    }
+
+    /* طراحی کارت‌های ساعت عتیقه */
+    .clock-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .clock-card {
+      background: rgba(4, 12, 32, 0.85);
+      border: 1px solid rgba(245, 175, 25, 0.3);
+      border-radius: 16px;
+      padding: 15px 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .clock-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      pointer-events: none;
+    }
+
+    .clock-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      margin-bottom: 2px;
+    }
+
+    .clock-label {
+      font-size: 12px;
+      color: #a0aec0;
+      letter-spacing: 0.5px;
+    }
+
+    .full-width-card {
+      grid-column: span 2;
+    }
+
+    /* دکمه‌های پایین داشبورد */
+    .dashboard-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #b0c4de;
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      border-color: #ffd700;
+      color: #fff;
+    }
+
+    .btn-install {
+      background: rgba(245, 175, 25, 0.15);
+      border: 1px solid var(--gold-solid);
+      color: #ffd700;
+      display: none; /* در صورت نصب‌پذیر بودن فعال می‌شود */
+    }
+
+    /* استایل‌های ریسپانسیو */
+    @media (max-width: 400px) {
+      .clock-value { font-size: 26px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- بخش دریافت اطلاعات کاربر (شروع کار) -->
+    <div class="royal-card" id="setup-card">
+      <h1>ساعت T</h1>
+      <p class="subtitle">تاریخ تولد دقیق و ساعت تولد حدودی خودت رو انتخاب کن:</p>
+
+      <div class="form-group">
+        <label>تاریخ تولد (خورشیدی)</label>
+        <div class="select-row">
+          <select id="dob-day" required></select>
+          <select id="dob-month" required></select>
+          <select id="dob-year" required></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>ساعت تولد (حدودی)</label>
+        <div class="select-time-row">
+          <select id="dob-hour" required></select>
+          <select id="dob-minute" required></select>
+          <select id="dob-ampm" required>
+            <option value="AM">قبل از ظهر (AM)</option>
+            <option value="PM">بعد از ظهر (PM)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-gold" id="btn-start">ثبت و شروع ساعت عمر</button>
+    </div>
+
+    <!-- داشبورد اصلی نمایش ساعت T -->
+    <div class="royal-card dashboard" id="dashboard-card">
+      <h1>ساعت T</h1>
+      <p class="subtitle" style="margin-bottom: 10px;">عمر سپری شده شما تا این لحظه</p>
+
+      <div class="clock-container">
+        <div class="clock-card">
+          <div class="clock-value" id="val-years">۰</div>
+          <div class="clock-label">سال</div>
+        </div>
+        <div class="clock-card">
+          <div class="clock-value" id="val-months">۰</div>
+          <div class="clock-label">ماه</div>
+        </div>
+        <div class="clock-card">
+          <div class="clock-value" id="val-days">۰</div>
+          <div class="clock-label">روز</div>
+        </div>
+        <div class="clock-card">
+          <div class="clock-value" id="val-hours">۰</div>
+          <div class="clock-label">ساعت</div>
+        </div>
+        <div class="clock-card full-width-card">
+          <div class="clock-value">
+            <span id="val-minutes">۰</span>:<span id="val-seconds">۰۰</span>
+          </div>
+          <div class="clock-label">دقیقه و ثانیه</div>
+        </div>
+      </div>
+
+      <div class="dashboard-actions">
+        <button class="btn-secondary btn-install" id="btn-install-app">نصب اپلیکیشن روی گوشی/ویندوز</button>
+        <a class="btn-secondary" href="https://t.me/botsaati" target="_blank">ساعتT چیست؟</a>
+        <button class="btn-secondary" id="btn-reset" style="opacity: 0.6; border: none; font-size: 11px;">تنظیم مجدد تاریخ تولد</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // پر کردن فیلدهای انتخابی (Select)
+    const selectYear = document.getElementById('dob-year');
+    const selectMonth = document.getElementById('dob-month');
+    const selectDay = document.getElementById('dob-day');
+    const selectHour = document.getElementById('dob-hour');
+    const selectMinute = document.getElementById('dob-minute');
+
+    // سال‌ها ۱۳۳۰ تا ۱۴۰۵
+    for (let y = 1405; y >= 1330; y--) {
+      let opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y;
+      selectYear.appendChild(opt);
+    }
+
+    // ماه‌های شمسی
+    const months = [
+      "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+      "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+    ];
+    months.forEach((m, index) => {
+      let opt = document.createElement('option');
+      opt.value = index + 1;
+      opt.textContent = m;
+      selectMonth.appendChild(opt);
+    });
+
+    // روزها ۱ تا ۳۱
+    for (let d = 1; d <= 31; d++) {
+      let opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      selectDay.appendChild(opt);
+    }
+
+    // ساعت ۱ تا ۱۲
+    for (let h = 1; h <= 12; h++) {
+      let opt = document.createElement('option');
+      opt.value = h;
+      opt.textContent = h;
+      selectHour.appendChild(opt);
+    }
+
+    // دقیقه ۰ تا ۵۹
+    for (let m = 0; m < 60; m++) {
+      let opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m < 10 ? '0' + m : m;
+      selectMinute.appendChild(opt);
+    }
+
+    // تابع کمکی تبدیل تاریخ جلالی به میلادی بدون نیاز به کتابخانه‌های سنگین خارجی
+    function jalaliToGregorian(jy, jm, jd) {
+      jy = parseInt(jy);
+      jm = parseInt(jm);
+      jd = parseInt(jd);
+      let jy2 = (jy <= 979) ? 0 : 979;
+      jy -= (jy <= 979) ? 621 : 1600;
+      let jSub = jy * 365 + parseInt(jy / 33) * 8 + parseInt((jy % 33 + 3) / 4);
+      for (let i = 0; i < jm - 1; ++i) {
+        jSub += (i < 6) ? 31 : 30;
+      }
+      let gSub = jSub + jd - 79 + jy2 * 365 + parseInt(jy2 / 4) - parseInt(jy2 / 100) + parseInt(jy2 / 400);
+      let gy = 400 * parseInt(gSub / 146097);
+      gSub %= 146097;
+      let leap = 1;
+      if (gSub >= 36525) {
+        gSub--;
+        gy += 100 * parseInt(gSub / 36524);
+        gSub %= 36524;
+        if (gSub >= 365) gSub++;
+        else leap = 0;
+      }
+      gy += 4 * parseInt(gSub / 1461);
+      gSub %= 1461;
+      if (gSub >= 366) {
+        leap = 0;
+        gSub--;
+        gy += parseInt(gSub / 365);
+        gSub %= 365;
+      }
+      let i = 0;
+      const gDays = [0, 31, (leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      for (i = 1; i <= 12; ++i) {
+        if (gSub < gDays[i]) break;
+        gSub -= gDays[i];
+      }
+      return { y: gy, m: i, d: gSub + 1 };
+    }
+
+    // گرفتن متغیرها
+    let birthDateTimestamp = null;
+    let clockInterval = null;
+
+    const setupCard = document.getElementById('setup-card');
+    const dashboardCard = document.getElementById('dashboard-card');
+    const btnStart = document.getElementById('btn-start');
+    const btnReset = document.getElementById('btn-reset');
+
+    // لود داده از LocalStorage
+    const savedBirth = localStorage.getItem('birth_timestamp');
+    if (savedBirth) {
+      birthDateTimestamp = parseInt(savedBirth);
+      showDashboard();
+    }
+
+    btnStart.addEventListener('click', () => {
+      const jy = selectYear.value;
+      const jm = selectMonth.value;
+      const jd = selectDay.value;
+      let hour = parseInt(selectHour.value);
+      const min = parseInt(selectMinute.value);
+      const ampm = document.getElementById('dob-ampm').value;
+
+      // اصلاح ساعت به حالت ۲۴ ساعته
+      if (ampm === 'PM' && hour < 12) hour += 12;
+      if (ampm === 'AM' && hour === 12) hour = 0;
+
+      // تبدیل جلالی به میلادی
+      const greg = jalaliToGregorian(jy, jm, jd);
+      const birthDate = new Date(greg.y, greg.m - 1, greg.d, hour, min, 0);
+      birthDateTimestamp = birthDate.getTime();
+
+      // ذخیره
+      localStorage.setItem('birth_timestamp', birthDateTimestamp);
+      
+      // درخواست دسترسی به نوتیفیکیشن
+      if ('Notification' in window) {
+        Notification.requestPermission();
+      }
+
+      showDashboard();
+    });
+
+    btnReset.addEventListener('click', () => {
+      localStorage.removeItem('birth_timestamp');
+      clearInterval(clockInterval);
+      dashboardCard.style.display = 'none';
+      setupCard.style.display = 'block';
+    });
+
+    function showDashboard() {
+      setupCard.style.display = 'none';
+      dashboardCard.style.display = 'block';
+      updateAge();
+      clockInterval = setInterval(updateAge, 1000);
+    }
+
+    function updateAge() {
+      if (!birthDateTimestamp) return;
+
+      const now = new Date().getTime();
+      const diffMs = now - birthDateTimestamp;
+
+      if (diffMs < 0) {
+        document.getElementById('val-years').textContent = '۰';
+        document.getElementById('val-months').textContent = '۰';
+        document.getElementById('val-days').textContent = '۰';
+        document.getElementById('val-hours').textContent = '۰';
+        document.getElementById('val-minutes').textContent = '۰';
+        document.getElementById('val-seconds').textContent = '۰۰';
+        return;
+      }
+
+      // محاسبه دقیق بر اساس تفاوت تاریخ‌ها
+      const birthDate = new Date(birthDateTimestamp);
+      const currentDate = new Date();
+
+      let years = currentDate.getFullYear() - birthDate.getFullYear();
+      let months = currentDate.getMonth() - birthDate.getMonth();
+      let days = currentDate.getDate() - birthDate.getDate();
+      let hours = currentDate.getHours() - birthDate.getHours();
+      let minutes = currentDate.getMinutes() - birthDate.getMinutes();
+      let seconds = currentDate.getSeconds() - birthDate.getSeconds();
+
+      if (seconds < 0) {
+        seconds += 60;
+        minutes--;
+      }
+      if (minutes < 0) {
+        minutes += 60;
+        hours--;
+      }
+      if (hours < 0) {
+        hours += 24;
+        days--;
+      }
+      if (days < 0) {
+        // بدست آوردن تعداد روزهای ماه قبل
+        const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+        days += prevMonth.getDate();
+        months--;
+      }
+      if (months < 0) {
+        months += 12;
+        years--;
+      }
+
+      // به‌روزرسانی مقادیر به صورت فارسی
+      document.getElementById('val-years').textContent = toPersianNum(years);
+      document.getElementById('val-months').textContent = toPersianNum(months);
+      document.getElementById('val-days').textContent = toPersianNum(days);
+      document.getElementById('val-hours').textContent = toPersianNum(hours);
+      document.getElementById('val-minutes').textContent = toPersianNum(minutes);
+      document.getElementById('val-seconds').textContent = seconds < 10 ? toPersianNum('0' + seconds) : toPersianNum(seconds);
+    }
+
+    function toPersianNum(num) {
+      const pDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+      return num.toString().replace(/[0-9]/g, function (w) {
+        return pDigits[+w];
+      });
+    }
+
+    // رجیستر کردن Service Worker برای قابلیت PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => {
+            console.log('سرویس ورکر فعال شد!', reg.scope);
+            // درخواست نوتیفیکیشن دوره‌ای ۸ ساعته
+            checkAndScheduleNotification();
+          })
+          .catch(err => console.log('خطا در ثبت سرویس ورکر:', err));
+      });
+    }
+
+    // منطق چک کردن نوتیفیکیشن هر دقیقه برای ارسال یادآوری ۸ ساعته
+    function checkAndScheduleNotification() {
+      setInterval(() => {
+        const lastNotif = localStorage.getItem('last_notification_time');
+        const now = Date.now();
+        // ۸ ساعت = ۲۸۸۰۰۰۰۰ میلی‌ثانیه
+        if (!lastNotif || (now - parseInt(lastNotif) > 28800000)) {
+          sendAgeNotification();
+        }
+      }, 60000); // هر دقیقه چک کند
+    }
+
+    function sendAgeNotification() {
+      if (Notification.permission === 'granted' && birthDateTimestamp) {
+        const now = Date.now();
+        const diffMs = now - birthDateTimestamp;
+        const years = Math.floor(diffMs / (365.25 * 24 * 60 * 60 * 1000));
+        
+        navigator.serviceWorker.ready.then(registration => {
+          registration.showNotification('ساعت T', {
+            body: `همین حالا عمر شما به ${toPersianNum(years)} سال رسید. قدر لحظات رو بدون!`,
+            icon: 'icon-192.png',
+            badge: 'icon-192.png',
+            vibrate: [200, 100, 200]
+          });
+          localStorage.setItem('last_notification_time', now.toString());
+        });
+      }
+    }
+
+    // منطق دکمه نصب اپلیکیشن (PWA)
+    let deferredPrompt;
+    const installBtn = document.getElementById('btn-install-app');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block'; // نمایش دکمه نصب
+    });
+
+    installBtn.addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('کاربر اپلیکیشن را نصب کرد');
+          }
+          deferredPrompt = null;
+          installBtn.style.display = 'none';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
